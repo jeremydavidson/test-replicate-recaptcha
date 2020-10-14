@@ -1,0 +1,56 @@
+{
+  "name": "test",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@material-ui/core": "^4.11.0",
+    "@material-ui/lab": "^4.0.0-alpha.56",
+    "@testing-library/jest-dom": "^4.2.4",
+    "@testing-library/react": "^9.3.2",
+    "@testing-library/user-event": "^7.1.2",
+    "axios": "^0.20.0",
+    "cypress": "^5.3.0",
+    "eslint-plugin-cypress": "^2.11.2",
+    "express": "^4.17.1",
+    "json-stringify-safe": "^5.0.1",
+    "msw": "^0.21.2",
+    "node-env-run": "^4.0.2",
+    "node-json-transform": "^1.1.1",
+    "nodemon": "^2.0.4",
+    "npm-run-all": "^4.1.5",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "react-google-recaptcha": "^2.1.0",
+    "react-scripts": "3.4.3"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "server": "nodenv server --exec nodemon",
+    "dev": "run-p server start"
+  },
+  "eslintConfig": {
+    "extends": "react-app",
+    "plugins": [
+      "cypress"
+    ],
+    "env": {
+      "cypress/globals": true
+    }
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "proxy": "http://localhost:3001"
+}
