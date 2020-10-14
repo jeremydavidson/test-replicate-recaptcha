@@ -8,7 +8,7 @@ describe("App", () => {
   });
 
   it("should display a heading", async () => {
-    const component = await screen.findByText("Hello");
+    const component = await screen.findByText("Select all dogs");
     expect(component).toBeInTheDocument();
   });
 });
