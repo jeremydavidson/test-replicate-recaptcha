@@ -3,14 +3,18 @@ import "./App.css";
 import { makeStyles } from "@material-ui/core/styles";
 import {
   Button,
+  Card,
   CircularProgress,
-  Container, Grid, Tooltip, Typography
+  Container,
+  Grid,
+  Tooltip,
+  Typography,
 } from "@material-ui/core";
 
 const LENGTH_IMAGES = 9;
 export const DIMENSION_IMAGE = 142;
-const DIMENSION_GRID_SPACING = 24;
-const DIMENSION_GRID = (DIMENSION_IMAGE * 3) + (DIMENSION_GRID_SPACING * 3);
+const DIMENSION_GRID_SPACING = 26;
+const DIMENSION_GRID = DIMENSION_IMAGE * 3 + DIMENSION_GRID_SPACING * 4;
 const URL_KEY = `https://loremflickr.com/${DIMENSION_IMAGE}/${DIMENSION_IMAGE}/cat`;
 const URL_DISTRACTOR = `https://loremflickr.com/${DIMENSION_IMAGE}/${DIMENSION_IMAGE}/dog`;
 export const LABEL_KEY = "cats";
@@ -50,7 +54,7 @@ function App() {
     const load = async () => {
       await loadImages();
       setIsLoading(false);
-    }
+    };
     load();
   }, []);
 
@@ -76,7 +80,7 @@ function App() {
       }
     });
     setIsReadyToSubmit(isReady);
-  }
+  };
 
   // Submit and evaluate success
   const handleSubmitPress = () => {
@@ -90,16 +94,22 @@ function App() {
     <Container className={classes.main}>
       {isLoading && (
         <div className={classes.flexible}>
-          <Typography variant="h4" component="h1" className={classes.heading}>Loading...</Typography>
+          <Typography variant="h4" component="h1" className={classes.heading}>
+            Loading...
+          </Typography>
           <CircularProgress />
         </div>
       )}
       {!isLoading && isSuccess && (
-        <Typography variant="h4" component="h1" className={classes.heading}>Thanks, you selected all {LABEL_KEY}</Typography>
+        <Typography variant="h4" component="h1" className={classes.heading}>
+          Thanks, you selected all {LABEL_KEY}
+        </Typography>
       )}
       {!isLoading && !isSuccess && (
-        <div>
-          <Typography variant="h4" component="h1" className={classes.heading}>Select all {LABEL_KEY}</Typography>
+        <Card className={classes.card}>
+          <Typography variant="h4" component="h1" className={classes.heading}>
+            Select all {LABEL_KEY}
+          </Typography>
           <Grid container spacing={1}>
             {imageCollection.map((image) => (
               <Grid item xs={4} key={image.index}>
@@ -122,7 +132,9 @@ function App() {
           <div className={classes.flexible}>
             <div>
               {isSubmitAttempted && !isSuccess && !isReadyToSubmit && (
-                <Typography>You still have more {LABEL_KEY} to select...</Typography>
+                <Typography>
+                  You still have more {LABEL_KEY} to select...
+                </Typography>
               )}
               {isReadyToSubmit && !isSuccess && (
                 <Typography>You are ready to submit...</Typography>
@@ -134,9 +146,9 @@ function App() {
               color="primary"
             >
               Submit
-              </Button>
+            </Button>
           </div>
-        </div>
+        </Card>
       )}
     </Container>
   );
@@ -159,7 +171,10 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
-  }
+  },
+  card: {
+    padding: theme.spacing(2),
+  },
 }));
 
 export { App };
