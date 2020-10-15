@@ -16,4 +16,16 @@ describe("The app", () => {
     cy.wait(1000).contains('Submit').click();
     cy.contains("Thanks, you selected all dogs");
   });
+
+  it("should display a message when evaluation isn't successful", () => {
+    cy.visit("http://localhost:3000");
+    cy.wait(1000).contains('Submit').click();
+    cy.contains("You still have more");
+  });
+
+  it("should display message when you are ready to submit", () => {
+    cy.visit("http://localhost:3000");
+    cy.get("[alt='dog']").click({ multiple: true });
+    cy.wait(1000).contains('You are ready to submit');
+  });
 });

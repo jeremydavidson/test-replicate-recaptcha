@@ -20,6 +20,8 @@ function App() {
   const [imageCollection, setImageCollection] = useState([]);
   const [isSuccess, setIsSuccess] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [isSubmitAttempted, setIsSubmitAttempted] = useState(false);
+  const [isReadyToSubmit, setIsReadyToSubmit] = useState(false);
 
   // Initialize an array of random images
   // TODO: We should verify that at least 1 distractor was loaded
@@ -63,20 +65,25 @@ function App() {
     pressed.imageSource = response.url;
     pressed.isDog = !oldIsDog;
     setImageCollection(images);
+    evaluate(images);
   };
 
-  // Evaluate if user succeeded
-  const handleSubmitPress = () => {
-    let isSuccess = true;
-    console.log("Evaluate before: " + isSuccess);
-    imageCollection.forEach((image) => {
-      console.log("Evaluate image: " + image.index + "?" + image.isDog);
+  // Evaluate if ready to submit
+  const evaluate = (images) => {
+    let is = true;
+    images.forEach((image) => {
       if (image.isDog) {
-        isSuccess = false;
+        is = false;
       }
     });
-    console.log("Evaluate after: " + isSuccess);
-    if (isSuccess) {
+    setIsReadyToSubmit(is);
+    return is;
+  }
+
+  // Submit and evaluate success
+  const handleSubmitPress = () => {
+    setIsSubmitAttempted(true);
+    if (isReadyToSubmit) {
       setIsSuccess(true);
     }
   };
@@ -115,7 +122,14 @@ function App() {
             ))}
           </Grid>
           <div className={classes.flexible}>
-            <div></div>
+            <div>
+              {isSubmitAttempted && !isSuccess && !isReadyToSubmit && (
+                <Typography>You still have more dogs to select...</Typography>
+              )}
+              {isReadyToSubmit && !isSuccess && (
+                <Typography>You are ready to submit...</Typography>
+              )}
+            </div>
             <Button
               onClick={handleSubmitPress}
               variant="contained"
