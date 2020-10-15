@@ -28,16 +28,23 @@ function App() {
   const [isSubmitAttempted, setIsSubmitAttempted] = useState(false);
   const [isReadyToSubmit, setIsReadyToSubmit] = useState(false);
 
-  // Initialize an array of random images
-  // TODO: We should verify that at least 1 distractor was loaded
-  // or else there will be a corner case where zero keys are loaded
+  // Initialize an array of random images.
+  // Track at lesat 1 key image is loaded.
   useEffect(() => {
+    let isKeyLoaded = false;
     const loadImages = async () => {
+      console.log("loadImages");
       const images = [];
       for (let i = 0; i < LENGTH_IMAGES; i++) {
-        const isKey = Math.random() < 0.5;
+        const random = Math.random();
+        const isKey = random < 0.5;
+        console.log("loadImages " + random + " ? " + isKey);
+        if (isKey) {
+          isKeyLoaded = true;
+        }
         const url = isKey ? URL_KEY : URL_DISTRACTOR;
 
+        //`${url}?random=${random}`
         const response = await fetch(url);
         const imageSource = response.url;
         const representation = {
@@ -50,7 +57,10 @@ function App() {
       setImageCollection(images);
     };
     const load = async () => {
-      await loadImages();
+      // Load images until at least 1 key is loaded.
+      while (!isKeyLoaded) {
+        await loadImages();
+      }
       setIsLoading(false);
     };
     load();
@@ -115,7 +125,7 @@ function App() {
                   title={
                     image.isKey
                       ? `${LABEL_KEY} at ${image.index}`
-                      : `Distractor at ${image.index}`
+                      : `distractor at ${image.index}`
                   }
                 >
                   <img
