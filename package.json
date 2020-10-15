@@ -13,6 +13,7 @@
     "cypress-dark": "^1.7.14",
     "eslint-plugin-cypress": "^2.11.2",
     "express": "^4.17.1",
+    "fetch-mock": "^9.10.7",
     "json-stringify-safe": "^5.0.1",
     "msw": "^0.21.2",
     "node-env-run": "^4.0.2",

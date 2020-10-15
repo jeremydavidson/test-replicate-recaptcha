@@ -12,11 +12,11 @@ import {
 } from "@material-ui/core";
 
 const LENGTH_IMAGES = 9;
-export const DIMENSION_IMAGE = 142;
+export const DIMENSION_IMAGE = 200;
 const DIMENSION_GRID_SPACING = 26;
 const DIMENSION_GRID = DIMENSION_IMAGE * 3 + DIMENSION_GRID_SPACING * 4;
 const URL_KEY = `https://loremflickr.com/${DIMENSION_IMAGE}/${DIMENSION_IMAGE}/cat`;
-const URL_DISTRACTOR = `https://loremflickr.com/${DIMENSION_IMAGE}/${DIMENSION_IMAGE}/dog`;
+const URL_DISTRACTOR = `https://loremflickr.com/${DIMENSION_IMAGE}/${DIMENSION_IMAGE}/newyork,snow`;
 export const LABEL_KEY = "cats";
 
 function App() {
@@ -32,13 +32,11 @@ function App() {
   // TODO: We should verify that at least 1 distractor was loaded
   // or else there will be a corner case where zero keys are loaded
   useEffect(() => {
-    console.log("useEffect...");
     const loadImages = async () => {
       const images = [];
       for (let i = 0; i < LENGTH_IMAGES; i++) {
         const isKey = Math.random() < 0.5;
         const url = isKey ? URL_KEY : URL_DISTRACTOR;
-        console.log("url: " + url);
 
         const response = await fetch(url);
         const imageSource = response.url;
