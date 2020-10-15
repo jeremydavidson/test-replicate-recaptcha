@@ -3,6 +3,7 @@ import "./App.css";
 import { makeStyles } from "@material-ui/core/styles";
 import {
   Button,
+  CircularProgress,
   Container, Grid, Tooltip, Typography
 } from "@material-ui/core";
 
@@ -18,6 +19,7 @@ function App() {
 
   const [imageCollection, setImageCollection] = useState([]);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   // Initialize an array of random images
   // TODO: We should verify that at least 1 distractor was loaded
@@ -44,7 +46,11 @@ function App() {
       }
       setImageCollection(images);
     };
-    loadImages();
+    const load = async () => {
+      await loadImages();
+      setIsLoading(false);
+    }
+    load();
   }, []);
 
   // When user presses an image, reverse one category to the other
@@ -77,44 +83,49 @@ function App() {
 
   return (
     <Container className={classes.main}>
-      {isSuccess
-        ? (
-          <Typography variant="h4" component="h1">Thanks, you selected all dogs</Typography>
-        )
-        : (
-          <div>
-            <Typography variant="h4" component="h1" className={classes.heading}>Select all dogs</Typography>
-            <Grid container spacing={1}>
-              {imageCollection.map((image) => (
-                <Grid item xs={4} key={image.index}>
-                  <Tooltip
-                    title={
-                      image.isDog
-                        ? `Dog at ${image.index}`
-                        : `Cat at ${image.index}`
-                    }
-                  >
-                    <img
-                      src={image.imageSource}
-                      onClick={() => handleImagePress(image.index)}
-                      alt={image.isDog ? "dog" : "cat"}
-                    />
-                  </Tooltip>
-                </Grid>
-              ))}
-            </Grid>
-            <div className={classes.footer}>
-              <div></div>
-              <Button
-                onClick={handleSubmitPress}
-                variant="contained"
-                color="primary"
-              >
-                Submit
+      {isLoading && (
+        <div className={classes.flexible}>
+          <Typography variant="h4" component="h1" className={classes.heading}>Loading...</Typography>
+          <CircularProgress />
+        </div>
+      )}
+      {!isLoading && isSuccess && (
+        <Typography variant="h4" component="h1" className={classes.heading}>Thanks, you selected all dogs</Typography>
+      )}
+      {!isLoading && !isSuccess && (
+        <div>
+          <Typography variant="h4" component="h1" className={classes.heading}>Select all dogs</Typography>
+          <Grid container spacing={1}>
+            {imageCollection.map((image) => (
+              <Grid item xs={4} key={image.index}>
+                <Tooltip
+                  title={
+                    image.isDog
+                      ? `Dog at ${image.index}`
+                      : `Cat at ${image.index}`
+                  }
+                >
+                  <img
+                    src={image.imageSource}
+                    onClick={() => handleImagePress(image.index)}
+                    alt={image.isDog ? "dog" : "cat"}
+                  />
+                </Tooltip>
+              </Grid>
+            ))}
+          </Grid>
+          <div className={classes.flexible}>
+            <div></div>
+            <Button
+              onClick={handleSubmitPress}
+              variant="contained"
+              color="primary"
+            >
+              Submit
               </Button>
-            </div>
           </div>
-        )}
+        </div>
+      )}
     </Container>
   );
 }
@@ -131,7 +142,7 @@ const useStyles = makeStyles((theme) => ({
     // margin: 0,
     paddingBottom: theme.spacing(3),
   },
-  footer: {
+  flexible: {
     paddingTop: theme.spacing(3),
     display: "flex",
     flexDirection: "row",
