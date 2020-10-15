@@ -8,11 +8,12 @@ import {
 } from "@material-ui/core";
 
 const LENGTH_IMAGES = 9;
-export const DIMENSIONS = 142;
+export const DIMENSION_IMAGE = 142;
 const DIMENSION_GRID_SPACING = 24;
-const DIMENSION_GRID = (DIMENSIONS * 3) + (DIMENSION_GRID_SPACING * 3)
-const URL_DOG = `https://loremflickr.com/${DIMENSIONS}/${DIMENSIONS}/dog`;
-const URL_CAT = `https://loremflickr.com/${DIMENSIONS}/${DIMENSIONS}/cat`;
+const DIMENSION_GRID = (DIMENSION_IMAGE * 3) + (DIMENSION_GRID_SPACING * 3);
+const URL_KEY = `https://loremflickr.com/${DIMENSION_IMAGE}/${DIMENSION_IMAGE}/cat`;
+const URL_DISTRACTOR = `https://loremflickr.com/${DIMENSION_IMAGE}/${DIMENSION_IMAGE}/dog`;
+export const LABEL_KEY = "cats";
 
 function App() {
   const classes = useStyles();
@@ -25,24 +26,22 @@ function App() {
 
   // Initialize an array of random images
   // TODO: We should verify that at least 1 distractor was loaded
-  // or else there will be a corner case where zero dogs are loaded
+  // or else there will be a corner case where zero keys are loaded
   useEffect(() => {
     console.log("useEffect...");
     const loadImages = async () => {
       const images = [];
       for (let i = 0; i < LENGTH_IMAGES; i++) {
-        const isDog = Math.random() < 0.5;
-        const url = isDog ? URL_DOG : URL_CAT;
+        const isKey = Math.random() < 0.5;
+        const url = isKey ? URL_KEY : URL_DISTRACTOR;
         console.log("url: " + url);
 
         const response = await fetch(url);
         const imageSource = response.url;
-        const isCorrectSelected = false;
         const representation = {
           imageSource,
-          isDog,
+          isKey,
           index: i,
-          isCorrectSelected,
         };
         images.push(representation);
       }
@@ -59,25 +58,24 @@ function App() {
   const handleImagePress = async (index) => {
     const images = [...imageCollection];
     const pressed = images[index];
-    const oldIsDog = pressed.isDog;
-    const url = oldIsDog ? URL_CAT : URL_DOG;
+    const wasKey = pressed.isKey;
+    const url = wasKey ? URL_DISTRACTOR : URL_KEY;
     const response = await fetch(url);
     pressed.imageSource = response.url;
-    pressed.isDog = !oldIsDog;
+    pressed.isKey = !wasKey;
     setImageCollection(images);
     evaluate(images);
   };
 
   // Evaluate if ready to submit
   const evaluate = (images) => {
-    let is = true;
+    let isReady = true;
     images.forEach((image) => {
-      if (image.isDog) {
-        is = false;
+      if (image.isKey) {
+        isReady = false;
       }
     });
-    setIsReadyToSubmit(is);
-    return is;
+    setIsReadyToSubmit(isReady);
   }
 
   // Submit and evaluate success
@@ -97,25 +95,25 @@ function App() {
         </div>
       )}
       {!isLoading && isSuccess && (
-        <Typography variant="h4" component="h1" className={classes.heading}>Thanks, you selected all dogs</Typography>
+        <Typography variant="h4" component="h1" className={classes.heading}>Thanks, you selected all {LABEL_KEY}</Typography>
       )}
       {!isLoading && !isSuccess && (
         <div>
-          <Typography variant="h4" component="h1" className={classes.heading}>Select all dogs</Typography>
+          <Typography variant="h4" component="h1" className={classes.heading}>Select all {LABEL_KEY}</Typography>
           <Grid container spacing={1}>
             {imageCollection.map((image) => (
               <Grid item xs={4} key={image.index}>
                 <Tooltip
                   title={
-                    image.isDog
-                      ? `Dog at ${image.index}`
-                      : `Cat at ${image.index}`
+                    image.isKey
+                      ? `${LABEL_KEY} at ${image.index}`
+                      : `Distractor at ${image.index}`
                   }
                 >
                   <img
                     src={image.imageSource}
                     onClick={() => handleImagePress(image.index)}
-                    alt={image.isDog ? "dog" : "cat"}
+                    alt={image.isKey ? LABEL_KEY : "distractor"}
                   />
                 </Tooltip>
               </Grid>
@@ -124,7 +122,7 @@ function App() {
           <div className={classes.flexible}>
             <div>
               {isSubmitAttempted && !isSuccess && !isReadyToSubmit && (
-                <Typography>You still have more dogs to select...</Typography>
+                <Typography>You still have more {LABEL_KEY} to select...</Typography>
               )}
               {isReadyToSubmit && !isSuccess && (
                 <Typography>You are ready to submit...</Typography>
